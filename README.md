@@ -91,10 +91,16 @@ L'application utilise un système de thème personnalisé qui s'adapte automatiq
 
 Toutes les données sont stockées localement sur l'appareil via AsyncStorage. Aucune connexion internet n'est requise pour utiliser l'application.
 
+## 🔒 Confidentialité
+
+Flip 7 respecte votre vie privée. L'application fonctionne entièrement hors ligne et ne collecte, ne transmet ni ne partage aucune donnée personnelle.
+
+- **Politique de Confidentialité** : [Voir la politique complète](./PRIVACY_POLICY.md)
+- **Version HTML** : [Politique de confidentialité (HTML)](./docs/privacy-policy.html)
+
 ## 🔄 Mises à jour futures
 
 - Export PDF de la feuille de score
 - Capture d'écran de la partie
 - Statistiques détaillées par joueur
 - Mode multijoueur en ligne (optionnel)
-

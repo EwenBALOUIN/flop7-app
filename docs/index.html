@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flip 7 - Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #6366F1;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            text-align: center;
+        }
+        .subtitle {
+            text-align: center;
+            color: #6B7280;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+        .card {
+            background: #F9FAFB;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #6366F1;
+        }
+        .card h2 {
+            color: #4F46E5;
+            margin-bottom: 15px;
+        }
+        .card p {
+            margin-bottom: 15px;
+            color: #374151;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #6366F1;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background: #4F46E5;
+        }
+        .features {
+            list-style: none;
+            margin-top: 15px;
+        }
+        .features li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        .features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10B981;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Flip 7</h1>
+        <p class="subtitle">Gestionnaire de parties hors ligne</p>
+
+        <div class="card">
+            <h2>📱 Application Mobile</h2>
+            <p>
+                Flip 7 est une application mobile React Native développée avec Expo pour gérer les parties du jeu de société Flip 7.
+            </p>
+            <ul class="features">
+                <li>Fonctionne entièrement hors ligne</li>
+                <li>Gestion de parties avec scores</li>
+                <li>Interface moderne et intuitive</li>
+                <li>Mode clair/sombre automatique</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>🔒 Confidentialité</h2>
+            <p>
+                Votre vie privée est importante. Flip 7 ne collecte, ne transmet ni ne partage aucune donnée personnelle.
+            </p>
+            <a href="privacy-policy.html" class="btn">Lire la Politique de Confidentialité</a>
+        </div>
+
+        <div class="card">
+            <h2>📚 Documentation</h2>
+            <p>
+                Pour plus d'informations sur l'application, consultez le README du projet sur GitHub.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+
