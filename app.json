@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "flop7-app",
-    "slug": "flop7-app",
+    "slug": "flop-7",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -34,6 +34,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "acf83745-ac92-4ec4-844f-5230c820ce70"
+      }
+    },
+    "owner": "flop-7-org"
   }
 }
