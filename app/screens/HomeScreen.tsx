@@ -50,7 +50,12 @@ export default function HomeScreen() {
   };
 
   const handleGamePress = (gameId: string) => {
-    router.push(`/screens/GameScreen?id=${gameId}`);
+    const game = games.find((g) => g.id === gameId);
+    if (game?.finishedAt) {
+      router.push(`/screens/GameRecapScreen?id=${gameId}`);
+    } else {
+      router.push(`/screens/GameScreen?id=${gameId}`);
+    }
   };
 
   return (

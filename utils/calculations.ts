@@ -44,3 +44,47 @@ export const formatDate = (timestamp: number): string => {
   });
 };
 
+const WINNING_SCORE = 200;
+
+export const checkGameFinished = (game: Game): { finished: boolean; winnerId?: string } => {
+  if (game.finishedAt) {
+    return { finished: true, winnerId: game.winnerId };
+  }
+
+  const sortedPlayers = getPlayersSortedByScore(game);
+  if (sortedPlayers.length === 0) {
+    return { finished: false };
+  }
+
+  const topPlayer = sortedPlayers[0];
+  const topScore = getPlayerTotal(game, topPlayer.id);
+
+  if (topScore >= WINNING_SCORE) {
+    return { finished: true, winnerId: topPlayer.id };
+  }
+
+  return { finished: false };
+};
+
+export const getGameStats = (game: Game) => {
+  const sortedPlayers = getPlayersSortedByScore(game);
+  const maxRound = getMaxRound(game);
+  const rounds = Array.from({ length: maxRound }, (_, i) => i + 1);
+
+  return {
+    sortedPlayers: sortedPlayers.map((player) => ({
+      player,
+      total: getPlayerTotal(game, player.id),
+      rounds: rounds.map((round) => {
+        const score = game.scores.find(
+          (s) => s.round === round && s.playerId === player.id
+        );
+        return score?.value ?? 0;
+      }),
+    })),
+    maxRound,
+    winner: sortedPlayers[0],
+    winnerScore: sortedPlayers.length > 0 ? getPlayerTotal(game, sortedPlayers[0].id) : 0,
+  };
+};
+

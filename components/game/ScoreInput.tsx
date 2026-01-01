@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Modal, ScrollView } from 'react-native';
-import { Text } from '@/components/ui/Text';
-import { Input } from '@/components/ui/Input';
-import { Button } from '@/components/ui/Button';
-import { useTheme } from '@/theme/useTheme';
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Text } from "@/components/ui/Text";
+import { useTheme } from "@/theme/useTheme";
+import React, { useState } from "react";
+import {
+  Modal,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 interface ScoreInputProps {
   value: number | null;
@@ -11,7 +17,7 @@ interface ScoreInputProps {
   playerName: string;
 }
 
-const QUICK_VALUES = [-50, -25, -10, 0, 5, 10, 15, 20, 25, 30, 35, 40, 50, 75, 100];
+const QUICK_VALUES = [0, 5, 20, 25, 50, 75, 100];
 
 export const ScoreInput: React.FC<ScoreInputProps> = ({
   value,
@@ -20,7 +26,7 @@ export const ScoreInput: React.FC<ScoreInputProps> = ({
 }) => {
   const theme = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
-  const [customValue, setCustomValue] = useState('');
+  const [customValue, setCustomValue] = useState("");
 
   const handleQuickSelect = (val: number) => {
     onValueChange(val);
@@ -29,15 +35,17 @@ export const ScoreInput: React.FC<ScoreInputProps> = ({
 
   const handleCustomSubmit = () => {
     const numValue = parseInt(customValue, 10);
-    if (!isNaN(numValue)) {
+    if (!isNaN(numValue) && numValue >= 0) {
       onValueChange(numValue);
-      setCustomValue('');
+      setCustomValue("");
       setModalVisible(false);
     }
   };
 
-  const formatQuickValue = (val: number): string => {
-    return val >= 0 ? `+${val}` : val.toString();
+  const handleCustomValueChange = (text: string) => {
+    // Ne permettre que les nombres positifs
+    const numericValue = text.replace(/[^0-9]/g, "");
+    setCustomValue(numericValue);
   };
 
   return (
@@ -46,19 +54,16 @@ export const ScoreInput: React.FC<ScoreInputProps> = ({
         style={[
           styles.container,
           {
-            backgroundColor: value !== null ? theme.primary + '20' : theme.surface,
+            backgroundColor:
+              value !== null ? theme.primary + "20" : theme.surface,
             borderColor: theme.border,
           },
         ]}
         onPress={() => setModalVisible(true)}
         activeOpacity={0.7}
       >
-        <Text
-          variant="body"
-          bold={value !== null}
-          color={value !== null && value < 0 ? 'error' : undefined}
-        >
-          {value !== null ? (value >= 0 ? `+${value}` : value.toString()) : '—'}
+        <Text variant="body" bold={value !== null}>
+          {value !== null ? value.toString() : "0"}
         </Text>
       </TouchableOpacity>
 
@@ -75,45 +80,70 @@ export const ScoreInput: React.FC<ScoreInputProps> = ({
             </Text>
 
             <ScrollView style={styles.quickValuesContainer}>
-              <Text variant="label" color="secondary" style={styles.sectionTitle}>
+              <Text
+                variant="label"
+                color="secondary"
+                style={styles.sectionTitle}
+              >
                 Valeurs rapides
               </Text>
               <View style={styles.quickValuesGrid}>
-                {QUICK_VALUES.map((val) => (
-                  <TouchableOpacity
-                    key={val}
-                    style={[
-                      styles.quickValueButton,
-                      {
-                        backgroundColor: val < 0 ? theme.error + '20' : theme.primary + '20',
-                        borderColor: val < 0 ? theme.error : theme.primary,
-                      },
-                    ]}
-                    onPress={() => handleQuickSelect(val)}
-                  >
-                    <Text variant="body" bold color={val < 0 ? 'error' : undefined}>
-                      {formatQuickValue(val)}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+                {QUICK_VALUES.map((val) => {
+                  const isZero = val === 0;
+                  return (
+                    <TouchableOpacity
+                      key={val}
+                      style={[
+                        styles.quickValueButton,
+                        isZero && styles.zeroButton,
+                        {
+                          backgroundColor: isZero
+                            ? theme.primary + "40"
+                            : theme.primary + "20",
+                          borderColor: isZero ? theme.primary : theme.primary,
+                          borderWidth: isZero ? 3 : 2,
+                        },
+                      ]}
+                      onPress={() => handleQuickSelect(val)}
+                    >
+                      <View style={styles.buttonContent}>
+                        <Text
+                          variant={isZero ? "h3" : "body"}
+                          bold
+                          color={isZero ? "primary" : undefined}
+                        >
+                          {val}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  );
+                })}
               </View>
             </ScrollView>
 
             <View style={styles.customInputContainer}>
-              <Text variant="label" color="secondary" style={styles.sectionTitle}>
+              <Text
+                variant="label"
+                color="secondary"
+                style={styles.sectionTitle}
+              >
                 Valeur personnalisée
               </Text>
               <Input
                 value={customValue}
-                onChangeText={setCustomValue}
-                placeholder="Entrez un score"
-                keyboardType="numeric"
+                onChangeText={handleCustomValueChange}
+                placeholder="Entrez un score (nombre positif)"
+                keyboardType="number-pad"
                 style={styles.customInput}
               />
               <Button
                 title="Valider"
                 onPress={handleCustomSubmit}
-                disabled={!customValue || isNaN(parseInt(customValue, 10))}
+                disabled={
+                  !customValue ||
+                  isNaN(parseInt(customValue, 10)) ||
+                  parseInt(customValue, 10) < 0
+                }
                 size="small"
               />
             </View>
@@ -138,27 +168,27 @@ const styles = StyleSheet.create({
     height: 44,
     borderRadius: 8,
     borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingHorizontal: 12,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   modalContent: {
-    width: '100%',
+    width: "100%",
     maxWidth: 400,
     borderRadius: 20,
     padding: 24,
-    maxHeight: '80%',
+    maxHeight: "80%",
   },
   modalTitle: {
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   sectionTitle: {
     marginBottom: 12,
@@ -168,24 +198,34 @@ const styles = StyleSheet.create({
     maxHeight: 300,
   },
   quickValuesGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 8,
     marginBottom: 16,
   },
   quickValueButton: {
-    width: '22%',
+    width: "22%",
     aspectRatio: 1,
     borderRadius: 12,
     borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  zeroButton: {
+    width: "46%",
+    aspectRatio: 2, // Ratio 2:1 pour un bouton deux fois plus large
+  },
+  buttonContent: {
+    width: "100%",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   customInputContainer: {
     marginTop: 16,
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(0,0,0,0.1)',
+    borderTopColor: "rgba(0,0,0,0.1)",
   },
   customInput: {
     marginBottom: 12,
@@ -194,4 +234,3 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
 });
-

@@ -55,6 +55,7 @@ function RootLayoutNav() {
         <Stack.Screen name="screens/HomeScreen" options={{ headerShown: false }} />
         <Stack.Screen name="screens/NewGameScreen" options={{ headerShown: false, presentation: 'modal' }} />
         <Stack.Screen name="screens/GameScreen" options={{ headerShown: false }} />
+        <Stack.Screen name="screens/GameRecapScreen" options={{ headerShown: false, presentation: 'modal' }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
       </Stack>

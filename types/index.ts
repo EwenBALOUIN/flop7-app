@@ -18,6 +18,8 @@ export interface Game {
   scores: Score[];
   createdAt: number;
   updatedAt: number;
+  finishedAt?: number;
+  winnerId?: string;
 }
 
 export interface GameStore {

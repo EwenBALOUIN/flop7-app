@@ -1,8 +1,9 @@
-import { create } from 'zustand';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Game, GameStore, Score } from '@/types';
+import { Game, GameStore, Score } from "@/types";
+import { checkGameFinished } from "@/utils/calculations";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { create } from "zustand";
 
-const STORAGE_KEY = '@flip7_games';
+const STORAGE_KEY = "@flip7_games";
 
 export const useGameStore = create<GameStore>((set, get) => ({
   games: [],
@@ -15,7 +16,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         set({ games });
       }
     } catch (error) {
-      console.error('Error loading games:', error);
+      console.error("Error loading games:", error);
     }
   },
 
@@ -33,9 +34,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   updateGame: (id, gameData) => {
     const games = get().games.map((game) =>
-      game.id === id
-        ? { ...game, ...gameData, updatedAt: Date.now() }
-        : game
+      game.id === id ? { ...game, ...gameData, updatedAt: Date.now() } : game
     );
     set({ games });
     AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(games));
@@ -57,11 +56,22 @@ export const useGameStore = create<GameStore>((set, get) => ({
           value,
           timestamp: Date.now(),
         };
-        return {
+        const updatedGame = {
           ...game,
           scores: [...game.scores, newScore],
           updatedAt: Date.now(),
         };
+
+        // Vérifier si la partie est terminée
+        if (!updatedGame.finishedAt) {
+          const { finished, winnerId } = checkGameFinished(updatedGame);
+          if (finished) {
+            updatedGame.finishedAt = Date.now();
+            updatedGame.winnerId = winnerId;
+          }
+        }
+
+        return updatedGame;
       }
       return game;
     });
@@ -72,13 +82,26 @@ export const useGameStore = create<GameStore>((set, get) => ({
   updateScore: (gameId, scoreId, value) => {
     const games = get().games.map((game) => {
       if (game.id === gameId) {
-        return {
+        const updatedGame = {
           ...game,
           scores: game.scores.map((score) =>
-            score.id === scoreId ? { ...score, value, timestamp: Date.now() } : score
+            score.id === scoreId
+              ? { ...score, value, timestamp: Date.now() }
+              : score
           ),
           updatedAt: Date.now(),
         };
+
+        // Vérifier si la partie est terminée après la mise à jour
+        if (!updatedGame.finishedAt) {
+          const { finished, winnerId } = checkGameFinished(updatedGame);
+          if (finished) {
+            updatedGame.finishedAt = Date.now();
+            updatedGame.winnerId = winnerId;
+          }
+        }
+
+        return updatedGame;
       }
       return game;
     });
@@ -101,4 +124,3 @@ export const useGameStore = create<GameStore>((set, get) => ({
     AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(games));
   },
 }));
-
